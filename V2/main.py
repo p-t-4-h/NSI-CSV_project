@@ -1,6 +1,8 @@
 import sys
 from AppFuncs import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout, QActionGroup
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -54,12 +56,6 @@ class CSVViewer(QMainWindow):
         export_action.triggered.connect(self.exportCSV)
         file_menu.addAction(export_action)
 
-        functions_menu = menubar.addMenu('Fonctions')
-
-        configure_action = QAction('Configurer', self)
-        configure_action.triggered.connect(self.showConfigDialog)
-        functions_menu.addAction(configure_action)
-
     def createTable(self):
         self.table = QTableWidget(self)
         self.layout.addWidget(self.table)
@@ -71,7 +67,24 @@ class CSVViewer(QMainWindow):
 
         if filePath:
             self.CSV = csvf()
-            self.displayCSV(filePath)
+            header, content, = self.CSV.Import(filePath)
+
+            sort_menu = self.menuBar().addMenu("&Trier")
+            group = QActionGroup(sort_menu)
+            action = QAction("Aucun", self, checkable=True)
+            action.triggered.connect(lambda: self.on_header_selected(sort_menu))
+            sort_menu.addAction(action)
+            group.addAction(action)
+
+            for h in header:
+                action = QAction(h, self, checkable=True)
+                action.triggered.connect(lambda: self.on_header_selected(sort_menu))
+                sort_menu.addAction(action)
+                group.addAction(action)
+
+            group.setExclusive(True)
+
+            self.displayCSV()
 
     def exportCSV(self):
         options = QFileDialog.Options()
@@ -81,14 +94,14 @@ class CSVViewer(QMainWindow):
         if filePath:
             self.saveCSV(filePath)
 
-    def displayCSV(self, filePath):
-        header, content = self.CSV.Import(filePath)
-        data = [header] + content
+    def displayCSV(self):
+        
+        data = [self.CSV.header] + self.CSV.content
         self.table.setRowCount(len(data))
-        self.table.setColumnCount(len(header))
+        self.table.setColumnCount(len(self.CSV.header))
 
         for row in range(len(data)):
-            for column in range(len(header)):
+            for column in range(len(self.CSV.header)):
                 item = QTableWidgetItem(data[row][column])
                 self.table.setItem(row, column, item)
 
@@ -105,13 +118,11 @@ class CSVViewer(QMainWindow):
         self.CSV.Export(filePath)
             
 
-    def showConfigDialog(self):
-        config_dialog = ConfigDialog(self)
-        result = config_dialog.exec_()
+    def on_header_selected(self, sort_menu):
+        selected_text = sort_menu.sender().text()
+        print(f"Texte de l'élément sélectionné : {selected_text}")
+            
 
-        if result == QDialog.Accepted:
-            parameter = config_dialog.input_field.text()
-            print(f'Paramètre configuré: {parameter}')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

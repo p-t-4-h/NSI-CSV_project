@@ -45,7 +45,7 @@ class csvf:
 
     def SortByHeader(self, header, reverse=False):
         id = self.GetHeaderID(header)
-        return sorted(self.data, key=lambda _: _[id], reverse=reverse)
+        return sorted(self.content, key=lambda _: _[id], reverse=reverse)
 
     def GetID(self, header, value):
         id = self.GetHeaderID(header)
