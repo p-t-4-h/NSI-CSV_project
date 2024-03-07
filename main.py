@@ -32,7 +32,7 @@ class CSVViewer(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('CSV Viewer')
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 1000, 800)
 
 
         self.central_widget = QWidget(self)
