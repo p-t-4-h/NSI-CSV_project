@@ -56,6 +56,9 @@ class CSVViewer(QMainWindow):
         export_action.triggered.connect(self.exportCSV)
         file_menu.addAction(export_action)
 
+        self.smenu = menubar.addMenu("&Trier")
+        self.smenu.setEnabled(False)
+
     def createTable(self):
         self.table = QTableWidget(self)
         self.layout.addWidget(self.table)
@@ -69,18 +72,21 @@ class CSVViewer(QMainWindow):
             self.CSV = csvf()
             header, content, = self.CSV.Import(filePath)
 
-            sort_menu = self.menuBar().addMenu("&Trier")
-            group = QActionGroup(sort_menu)
+            if self.smenu:
+                self.smenu.clear()
+
+            self.smenu.setEnabled(True)
+            group = QActionGroup(self.smenu)
             action = QAction("Aucun", self, checkable=True)
             action.setChecked(True)
-            action.triggered.connect(lambda: self.on_header_selected(sort_menu))
-            sort_menu.addAction(action)
+            action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+            self.smenu.addAction(action)
             group.addAction(action)
 
             for h in header:
                 action = QAction(h, self, checkable=True)
-                action.triggered.connect(lambda: self.on_header_selected(sort_menu))
-                sort_menu.addAction(action)
+                action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+                self.smenu.addAction(action)
                 group.addAction(action)
 
             group.setExclusive(True)
