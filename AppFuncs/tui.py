@@ -9,6 +9,11 @@ class ui:
     @staticmethod
     def Clear():
         print("\x1B[2J")
+        ui.MoveTo(0, 0)
+
+    @staticmethod
+    def MoveTo(x, y):
+        print(f"\x1B[{y};{x}H")
     
     @staticmethod
     def CreateTable(csv):
