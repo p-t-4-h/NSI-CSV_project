@@ -28,17 +28,23 @@ class CSVViewer(QMainWindow):
 
         file_menu = menubar.addMenu('Fichier')
 
+        new_action = QAction(QIcon('./logo/Plus.png'), 'Nouveau fichier CSV', self, checkable=False)
+        new_action.triggered.connect(self.NewCSV)
+        file_menu.addAction(new_action)
+
         load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', self, checkable=False)
-        load_action.triggered.connect(self.loadCSV)
+        load_action.triggered.connect(self.ImportCSV)
         file_menu.addAction(load_action)
 
         export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', self, checkable=False)
-        export_action.triggered.connect(self.exportCSV)
+        export_action.triggered.connect(self.ExportCSV)
         file_menu.addAction(export_action)
+
 
         self.smenu = menubar.addMenu("&Trier")
         self.smenu.setEnabled(False)
         self.smenu_group = QActionGroup(self.smenu)
+
         action = QAction("Aucun", self, checkable=True)
         action.setChecked(True)
         action.triggered.connect(lambda: self.on_header_selected(self.smenu))
@@ -83,7 +89,7 @@ class CSVViewer(QMainWindow):
         self.smenu.clear()
         self.update_smenu()
 
-    def loadCSV(self):
+    def ImportCSV(self):
         options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
         filePath, _ = QFileDialog.getOpenFileName(self, "Charger un fichier CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)", options=options)
@@ -99,7 +105,7 @@ class CSVViewer(QMainWindow):
             data = [self.CSV.header] + self.CSV.content
             self.displayCSV(data)
 
-    def exportCSV(self):
+    def ExportCSV(self):
         options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
         filePath, _ = QFileDialog.getSaveFileName(self, "Exporter en CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)", options=options)
@@ -143,7 +149,16 @@ class CSVViewer(QMainWindow):
     def on_header_selected(self, sort_menu):
         selected_text = sort_menu.sender().text()
         self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
-            
+    
+    def NewCSV(self):
+            self.CSV = csvf()
+
+            self.update_smenu()
+            self.smenu.setEnabled(True)
+            self.table.setEnabled(True)
+
+            self.NewColumn()
+
     def NewRow(self):
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
