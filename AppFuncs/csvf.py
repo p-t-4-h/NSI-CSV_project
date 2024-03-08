@@ -13,12 +13,12 @@ class csvf:
             self.sep = self.psep[[file.count(x) for x in self.psep].index(max([file.count(x) for x in self.psep]))]
             file = file.split("\n")
             self.header = file[0].split(self.sep)
-            self.content = [line.split(self.sep) for line in file[1:]]
+            self.content = [row.split(self.sep) for row in file[1:]]
             return self.header, self.content
     
     def Export(self, fn):
         with open(fn, 'w') as file:
-            file.write(self.sep.join([header for header in self.header])+"\n" + "\n".join([self.sep.join(line) for line in self.content]))
+            file.write(self.sep.join([header for header in self.header])+"\n" + "\n".join([self.sep.join(row) for row in self.content]))
         
     def Add(self, content):
         self.content.append(content)

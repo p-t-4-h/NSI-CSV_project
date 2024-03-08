@@ -41,16 +41,44 @@ class CSVViewer(QMainWindow):
         self.smenu.setEnabled(False)
 
     def createPopupMenu(self):
-        self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
+
+        """self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
         action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
-        action.triggered.connect(self.NewLine)
+        action.triggered.connect(self.NewRow)
         self.table.addAction(action)
 
         self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
         action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
         action.triggered.connect(self.NewColumn)
         self.table.addAction(action)
+        self.table.contextMenuEvent()"""
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self.showContextMenu)
+        pass
+    
+    def showContextMenu(self, pos):
 
+        indexes = [(x.column(), x.row()) for x in self.table.selectedIndexes()]
+        are_equal = all(tup[0] == indexes[0][0] for tup in indexes)
+
+        menu = QMenu(self.table)
+
+        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
+        action.triggered.connect(self.NewRow)
+        menu.addAction(action)
+
+        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
+        action.triggered.connect(self.NewColumn)
+        menu.addAction(action)
+
+        action_delete = QAction("Supprimer", self.table)
+        action.triggered.connect(lambda: self.Delete(indexes))
+
+        if are_equal:
+            menu.addAction(action_delete)
+
+        menu.exec_(self.table.mapToGlobal(pos))
+    
     def createTable(self):
         self.table = QTableWidget(self)
         self.layout.addWidget(self.table)
@@ -126,18 +154,20 @@ class CSVViewer(QMainWindow):
         selected_text = sort_menu.sender().text()
         self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
             
-    def NewLine(self):
+    def NewRow(self):
         self.CSV.content.append([None for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
         self.displayCSV(data)
 
     def NewColumn(self):
         data = [self.CSV.header] + self.CSV.content
-        [line.append(None) for line in data]
+        [row.append(None) for row in data]
         self.displayCSV(data)
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
         self.update_smenu()
 
+    def Delete(self, indexes):
+        pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
