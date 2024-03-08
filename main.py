@@ -96,6 +96,7 @@ class CSVViewer(QMainWindow):
             self.table.setEnabled(True)
 
             data = [self.CSV.header] + self.CSV.content
+            self.row_current_pos = list(range(len(data)))
             self.displayCSV(data)
 
     def ExportCSV(self):
@@ -110,7 +111,7 @@ class CSVViewer(QMainWindow):
 
         self.table.setRowCount(len(data))
         self.table.setColumnCount(len(data[0]))
-
+        
         for row in range(len(data)):
             for column in range(len(data[0])):
                 item = QTableWidgetItem(data[row][column])
@@ -122,11 +123,19 @@ class CSVViewer(QMainWindow):
         self.CSV.Export(filePath)
     
     def updateTable(self):
+        self.odata = []
+        for row in range(self.table.rowCount()):
+            row_data = []
+            for column in range(self.table.columnCount()):
+                item = self.table.item(self.row_current_pos[row], column)
+                row_data.append(item.text() if item is not None else '')
+            self.odata += [row_data]
+        
         data = []
         for row in range(self.table.rowCount()):
             row_data = []
             for column in range(self.table.columnCount()):
-                item = self.table.item(row, column)
+                item = self.table.item(self.row_current_pos[row], column)
                 row_data.append(item.text() if item is not None else '')
             data += [row_data]
         self.CSV.header = data[0]
@@ -150,16 +159,18 @@ class CSVViewer(QMainWindow):
 
         current = sort_menu.sender().text()
         if current!="Aucun" and self.smenu_checked=="Aucun":
-            self.table.setEnabled(False)
+            #self.table.setEnabled(False)
             self.odata = [self.CSV.header] + self.CSV.content
             self.smenu_checked = current
+            self.row_current_pos = [self.odata.index(x) for x in [self.CSV.header] + self.CSV.content]
             self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
         elif current!="Aucun" and self.smenu_checked!="Aucun":
-            self.table.setEnabled(False)
+            #self.table.setEnabled(False)
             self.smenu_checked = current
+            self.row_current_pos = [self.odata.index(x) for x in [self.CSV.header] + self.CSV.content]
             self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
         else:
-            self.table.setEnabled(True)
+            #self.table.setEnabled(True)
             self.smenu_checked = current
             self.displayCSV(self.odata)
 
