@@ -102,6 +102,7 @@ class CSVViewer(QMainWindow):
         for row in range(len(data)):
             for column in range(len(data[0])):
                 item = QTableWidgetItem(data[row][column])
+                item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, column, item)
 
     def saveCSV(self, filePath):
