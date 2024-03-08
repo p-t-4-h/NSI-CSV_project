@@ -9,6 +9,7 @@ class CSVViewer(QMainWindow):
         super().__init__()
 
         self.initUI()
+        self.smenu_checked = "Aucun"
 
     def initUI(self):
         self.setWindowTitle('CSV Editor')
@@ -44,13 +45,8 @@ class CSVViewer(QMainWindow):
         self.smenu = menubar.addMenu("&Trier")
         self.smenu.setEnabled(False)
         self.smenu_group = QActionGroup(self.smenu)
-
-        action = QAction("Aucun", self, checkable=True)
-        action.setChecked(True)
-        action.triggered.connect(lambda: self.on_header_selected(self.smenu))
-        self.smenu.addAction(action)
-        self.smenu_group.addAction(action)
         self.smenu_group.setExclusive(True)
+        
 
     def createPopupMenu(self):
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -86,7 +82,6 @@ class CSVViewer(QMainWindow):
 
     def handleItemChange(self):
         self.updateTable()
-        self.smenu.clear()
         self.update_smenu()
 
     def ImportCSV(self):
@@ -97,8 +92,6 @@ class CSVViewer(QMainWindow):
         if filePath:
             self.CSV = csvf()
             self.CSV.Import(filePath)
-
-            self.update_smenu()
             self.smenu.setEnabled(True)
             self.table.setEnabled(True)
 
@@ -140,16 +133,33 @@ class CSVViewer(QMainWindow):
         self.CSV.content = data[1:]
 
     def update_smenu(self):
-        for h in self.CSV.header:
-            action = QAction(h, self, checkable=True)
+        
+        if self.smenu:
+            self.smenu.clear()
+        
+        for h in ["Aucun"]+self.CSV.header:
+            action = QAction(h, self.smenu, checkable=True)
             action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+            action.setObjectName(h)
             self.smenu.addAction(action)
             self.smenu_group.addAction(action)
 
+        self.smenu.findChild(QAction, self.smenu_checked).setChecked(True)
+        
     def on_header_selected(self, sort_menu):
-        selected_text = sort_menu.sender().text()
-        self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
-    
+
+        current = sort_menu.sender().text()
+        if current!="Aucun" and self.smenu_checked=="Aucun":
+            self.odata = [self.CSV.header] + self.CSV.content
+            self.smenu_checked = current
+            self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
+        elif current!="Aucun" and self.smenu_checked!="Aucun":
+            self.smenu_checked = current
+            self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
+        else: 
+            self.smenu_checked = current
+            self.displayCSV(self.odata)
+
     def NewCSV(self):
             self.CSV = csvf()
 
