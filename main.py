@@ -159,14 +159,14 @@ class CSVViewer(QMainWindow):
         data = [self.CSV.header] + self.CSV.content
         indexes = [(x.row(), x.column()) for x in self.table.selectedIndexes()]
         if all(tup[0] == indexes[0][0] for tup in indexes) and [tup[1] for tup in indexes] == list(range(len(self.CSV.header))):
-            print("row")
+            data.pop(indexes[0][0])
         elif all(tup[1] == indexes[0][1] for tup in indexes) and [tup[0] for tup in indexes] == list(range(len(data))):
-            print("col")
+            [x.pop(indexes[0][1]) for x in data]
         else:
             for row, col in indexes:
                 data[row][col] = ''
-            
-            self.displayCSV(data)
+
+        self.displayCSV(data)
 
 
 if __name__ == '__main__':
