@@ -69,6 +69,12 @@ class CSVViewer(QMainWindow):
         self.layout.addWidget(self.table)
         self.createPopupMenu()
         self.table.setEnabled(False)
+        self.table.itemChanged.connect(self.handleItemChange)
+        self.table.itemActivated.connect(self.handleItemChange)
+
+    def handleItemChange(self):
+        self.updateTable()
+        self.update_smenu()
 
     def loadCSV(self):
         options = QFileDialog.Options()
@@ -106,6 +112,10 @@ class CSVViewer(QMainWindow):
                 self.table.setItem(row, column, item)
 
     def saveCSV(self, filePath):
+        self.updateTable()
+        self.CSV.Export(filePath)
+    
+    def updateTable(self):
         data = []
         for row in range(self.table.rowCount()):
             row_data = []
@@ -115,8 +125,7 @@ class CSVViewer(QMainWindow):
             data += [row_data]
         self.CSV.header = data[0]
         self.CSV.content = data[1:]
-        self.CSV.Export(filePath)
-    
+
     def update_smenu(self):
         if self.smenu:
             self.smenu.clear()
@@ -141,7 +150,6 @@ class CSVViewer(QMainWindow):
         self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
             
     def NewRow(self):
-        print(self.CSV.header, self.CSV.content)
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
         self.displayCSV(data)
@@ -151,7 +159,6 @@ class CSVViewer(QMainWindow):
         [row.append('') for row in self.CSV.content] 
         self.displayCSV([self.CSV.header] + self.CSV.content)
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
-        self.update_smenu()
 
     def Delete(self):
         data = [self.CSV.header] + self.CSV.content
