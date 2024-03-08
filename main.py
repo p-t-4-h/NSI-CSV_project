@@ -2,37 +2,18 @@ import sys
 from AppFuncs import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout, QActionGroup
-
-class ConfigDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.setWindowTitle('Configuration')
-        self.setGeometry(200, 200, 300, 100)
-
-        self.layout = QVBoxLayout(self)
-
-        self.label = QLabel('Paramètre:', self)
-        self.layout.addWidget(self.label)
-
-        self.input_field = QLineEdit(self)
-        self.layout.addWidget(self.input_field)
-
-        self.ok_button = QPushButton('OK', self)
-        self.ok_button.clicked.connect(self.accept)
-        self.layout.addWidget(self.ok_button)
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout, QActionGroup
 
 class CSVViewer(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.initUI()
-        self.CSV = None
+        #self.CSV = None
 
     def initUI(self):
         self.setWindowTitle('CSV Editor')
-        self.setGeometry(100, 100, 1000, 800)
+        self.setGeometry(0, 0, 1200, 900)
 
 
         self.central_widget = QWidget(self)
@@ -59,10 +40,7 @@ class CSVViewer(QMainWindow):
         self.smenu = menubar.addMenu("&Trier")
         self.smenu.setEnabled(False)
 
-    def createTable(self):
-        self.table = QTableWidget(self)
-        self.layout.addWidget(self.table)
-
+    def createPopupMenu(self):
         self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
         action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
         action.triggered.connect(self.NewLine)
@@ -72,6 +50,12 @@ class CSVViewer(QMainWindow):
         action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
         action.triggered.connect(self.NewColumn)
         self.table.addAction(action)
+
+    def createTable(self):
+        self.table = QTableWidget(self)
+        self.layout.addWidget(self.table)
+        self.createPopupMenu()
+        self.table.setEnabled(False)
 
     def loadCSV(self):
         options = QFileDialog.Options()
@@ -84,6 +68,7 @@ class CSVViewer(QMainWindow):
 
             self.update_smenu()
             self.smenu.setEnabled(True)
+            self.table.setEnabled(True)
 
             data = [self.CSV.header] + self.CSV.content
             self.displayCSV(data)
