@@ -31,7 +31,7 @@ class CSVViewer(QMainWindow):
         self.CSV = None
 
     def initUI(self):
-        self.setWindowTitle('CSV Viewer')
+        self.setWindowTitle('CSV Editor')
         self.setGeometry(100, 100, 1000, 800)
 
 
@@ -48,11 +48,11 @@ class CSVViewer(QMainWindow):
 
         file_menu = menubar.addMenu('Fichier')
 
-        load_action = QAction('Charger un fichier CSV', self)
+        load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', self, checkable=False)
         load_action.triggered.connect(self.loadCSV)
         file_menu.addAction(load_action)
 
-        export_action = QAction('Exporter en CSV', self)
+        export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', self, checkable=False)
         export_action.triggered.connect(self.exportCSV)
         file_menu.addAction(export_action)
 
@@ -63,6 +63,16 @@ class CSVViewer(QMainWindow):
         self.table = QTableWidget(self)
         self.layout.addWidget(self.table)
 
+        self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
+        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
+        action.triggered.connect(self.NewLine)
+        self.table.addAction(action)
+
+        self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
+        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
+        action.triggered.connect(self.NewColumn)
+        self.table.addAction(action)
+
     def loadCSV(self):
         options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
@@ -70,26 +80,10 @@ class CSVViewer(QMainWindow):
 
         if filePath:
             self.CSV = csvf()
-            header, content, = self.CSV.Import(filePath)
+            self.CSV.Import(filePath)
 
-            if self.smenu:
-                self.smenu.clear()
-
+            self.update_smenu()
             self.smenu.setEnabled(True)
-            group = QActionGroup(self.smenu)
-            action = QAction("Aucun", self, checkable=True)
-            action.setChecked(True)
-            action.triggered.connect(lambda: self.on_header_selected(self.smenu))
-            self.smenu.addAction(action)
-            group.addAction(action)
-
-            for h in header:
-                action = QAction(h, self, checkable=True)
-                action.triggered.connect(lambda: self.on_header_selected(self.smenu))
-                self.smenu.addAction(action)
-                group.addAction(action)
-
-            group.setExclusive(True)
 
             data = [self.CSV.header] + self.CSV.content
             self.displayCSV(data)
@@ -123,12 +117,41 @@ class CSVViewer(QMainWindow):
         self.CSV.header = data[0]
         self.CSV.content = data[1:]
         self.CSV.Export(filePath)
-            
+    
+    def update_smenu(self):
+        if self.smenu:
+            self.smenu.clear()
+
+        group = QActionGroup(self.smenu)
+        action = QAction("Aucun", self, checkable=True)
+        action.setChecked(True)
+        action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+        self.smenu.addAction(action)
+        group.addAction(action)
+
+        for h in self.CSV.header:
+            action = QAction(h, self, checkable=True)
+            action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+            self.smenu.addAction(action)
+            group.addAction(action)
+
+        group.setExclusive(True)
 
     def on_header_selected(self, sort_menu):
         selected_text = sort_menu.sender().text()
         self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
             
+    def NewLine(self):
+        self.CSV.content.append([None for _ in range(len(self.CSV.header))])
+        data = [self.CSV.header] + self.CSV.content
+        self.displayCSV(data)
+
+    def NewColumn(self):
+        data = [self.CSV.header] + self.CSV.content
+        [line.append(None) for line in data]
+        self.displayCSV(data)
+        self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
+        self.update_smenu()
 
 
 if __name__ == '__main__':

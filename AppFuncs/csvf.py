@@ -2,10 +2,10 @@ import re
 
 class csvf:
     def __init__(self):
-        self.header = None
-        self.content = None
-        self.psep = [",", ";", "|"]
-        self.sep = None
+        self.header = []
+        self.content = []
+        self.psep = [',', ';', '|']
+        self.sep = str()
 
     def Import(self, fn):
         with open(fn, 'r') as file:
