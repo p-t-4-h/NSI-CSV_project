@@ -150,13 +150,16 @@ class CSVViewer(QMainWindow):
 
         current = sort_menu.sender().text()
         if current!="Aucun" and self.smenu_checked=="Aucun":
+            self.table.setEnabled(False)
             self.odata = [self.CSV.header] + self.CSV.content
             self.smenu_checked = current
             self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
         elif current!="Aucun" and self.smenu_checked!="Aucun":
+            self.table.setEnabled(False)
             self.smenu_checked = current
             self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
-        else: 
+        else:
+            self.table.setEnabled(True)
             self.smenu_checked = current
             self.displayCSV(self.odata)
 
