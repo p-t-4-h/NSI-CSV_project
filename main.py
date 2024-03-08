@@ -141,13 +141,14 @@ class CSVViewer(QMainWindow):
         self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(selected_text))
             
     def NewRow(self):
-        self.CSV.content.append([None for _ in range(len(self.CSV.header))])
+        print(self.CSV.header, self.CSV.content)
+        self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
         self.displayCSV(data)
 
     def NewColumn(self):
-        self.CSV.header.append(None)
-        [row.append(None) for row in self.CSV.content] 
+        self.CSV.header.append('')
+        [row.append('') for row in self.CSV.content] 
         self.displayCSV([self.CSV.header] + self.CSV.content)
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
         self.update_smenu()
@@ -161,7 +162,7 @@ class CSVViewer(QMainWindow):
             print("col")
         else:
             for row, col in indexes:
-                data[row][col] = None
+                data[row][col] = ''
             
             self.displayCSV(data)
 
