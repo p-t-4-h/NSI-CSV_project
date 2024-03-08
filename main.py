@@ -58,23 +58,20 @@ class CSVViewer(QMainWindow):
     
     def showContextMenu(self, pos):
 
-        indexes = [(x.column(), x.row()) for x in self.table.selectedIndexes()]
-        are_equal = all(tup[0] == indexes[0][0] for tup in indexes)
-
         menu = QMenu(self.table)
 
-        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
-        action.triggered.connect(self.NewRow)
-        menu.addAction(action)
+        action_n_row = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
+        action_n_row.triggered.connect(self.NewRow)
+        menu.addAction(action_n_row)
 
-        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
-        action.triggered.connect(self.NewColumn)
-        menu.addAction(action)
+        action_n_col = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
+        action_n_col.triggered.connect(self.NewColumn)
+        menu.addAction(action_n_col)
 
-        action_delete = QAction("Supprimer", self.table)
-        action.triggered.connect(lambda: self.Delete(indexes))
+        action_delete = QAction(QIcon('./logo/Delete.png'), "Supprimer", self.table)
+        action_delete.triggered.connect(self.Delete)
 
-        if are_equal:
+        if self.table.selectedItems():
             menu.addAction(action_delete)
 
         menu.exec_(self.table.mapToGlobal(pos))
@@ -166,8 +163,19 @@ class CSVViewer(QMainWindow):
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
         self.update_smenu()
 
-    def Delete(self, indexes):
-        pass
+    def Delete(self):
+        indexes = [(x.row(), x.column()) for x in self.table.selectedIndexes()]
+        if all(tup[0] == indexes[0][0] and tup[1]==range(len(self.CSV.header)) for tup in indexes):
+            print("row")
+        elif all(tup[1] == indexes[0][1] and tup[0]==range(len(self.CSV.content)) for tup in indexes):
+            print("col")
+        else:
+            data = [self.CSV.header] + self.CSV.content
+            for row, col in indexes:
+                data[row][col] = None
+            
+            self.displayCSV(data)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
