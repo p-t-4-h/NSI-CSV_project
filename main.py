@@ -9,7 +9,6 @@ class CSVViewer(QMainWindow):
         super().__init__()
 
         self.initUI()
-        #self.CSV = None
 
     def initUI(self):
         self.setWindowTitle('CSV Editor')
@@ -39,6 +38,13 @@ class CSVViewer(QMainWindow):
 
         self.smenu = menubar.addMenu("&Trier")
         self.smenu.setEnabled(False)
+        self.smenu_group = QActionGroup(self.smenu)
+        action = QAction("Aucun", self, checkable=True)
+        action.setChecked(True)
+        action.triggered.connect(lambda: self.on_header_selected(self.smenu))
+        self.smenu.addAction(action)
+        self.smenu_group.addAction(action)
+        self.smenu_group.setExclusive(True)
 
     def createPopupMenu(self):
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -74,6 +80,7 @@ class CSVViewer(QMainWindow):
 
     def handleItemChange(self):
         self.updateTable()
+        self.smenu.clear()
         self.update_smenu()
 
     def loadCSV(self):
@@ -127,23 +134,11 @@ class CSVViewer(QMainWindow):
         self.CSV.content = data[1:]
 
     def update_smenu(self):
-        if self.smenu:
-            self.smenu.clear()
-
-        group = QActionGroup(self.smenu)
-        action = QAction("Aucun", self, checkable=True)
-        action.setChecked(True)
-        action.triggered.connect(lambda: self.on_header_selected(self.smenu))
-        self.smenu.addAction(action)
-        group.addAction(action)
-
         for h in self.CSV.header:
             action = QAction(h, self, checkable=True)
             action.triggered.connect(lambda: self.on_header_selected(self.smenu))
             self.smenu.addAction(action)
-            group.addAction(action)
-
-        group.setExclusive(True)
+            self.smenu_group.addAction(action)
 
     def on_header_selected(self, sort_menu):
         selected_text = sort_menu.sender().text()
