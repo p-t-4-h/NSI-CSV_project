@@ -41,20 +41,8 @@ class CSVViewer(QMainWindow):
         self.smenu.setEnabled(False)
 
     def createPopupMenu(self):
-
-        """self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
-        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
-        action.triggered.connect(self.NewRow)
-        self.table.addAction(action)
-
-        self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
-        action = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
-        action.triggered.connect(self.NewColumn)
-        self.table.addAction(action)
-        self.table.contextMenuEvent()"""
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.showContextMenu)
-        pass
     
     def showContextMenu(self, pos):
 
@@ -164,13 +152,13 @@ class CSVViewer(QMainWindow):
         self.update_smenu()
 
     def Delete(self):
+        data = [self.CSV.header] + self.CSV.content
         indexes = [(x.row(), x.column()) for x in self.table.selectedIndexes()]
-        if all(tup[0] == indexes[0][0] and tup[1]==range(len(self.CSV.header)) for tup in indexes):
+        if all(tup[0] == indexes[0][0] for tup in indexes) and [tup[1] for tup in indexes] == list(range(len(self.CSV.header))):
             print("row")
-        elif all(tup[1] == indexes[0][1] and tup[0]==range(len(self.CSV.content)) for tup in indexes):
+        elif all(tup[1] == indexes[0][1] for tup in indexes) and [tup[0] for tup in indexes] == list(range(len(data))):
             print("col")
         else:
-            data = [self.CSV.header] + self.CSV.content
             for row, col in indexes:
                 data[row][col] = None
             
