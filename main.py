@@ -146,9 +146,9 @@ class CSVViewer(QMainWindow):
         self.displayCSV(data)
 
     def NewColumn(self):
-        data = [self.CSV.header] + self.CSV.content
-        [row.append(None) for row in data]
-        self.displayCSV(data)
+        self.CSV.header.append(None)
+        [row.append(None) for row in self.CSV.content] 
+        self.displayCSV([self.CSV.header] + self.CSV.content)
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
         self.update_smenu()
 
