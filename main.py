@@ -1,11 +1,12 @@
 import sys
 from AppFuncs import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout, QActionGroup
-
+from PyQt6.QtGui import *
+from PyQt6.QtCore import *
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
+#QAction, QActionGroup,
 models = {"Film": [["Titre", "Genre", "Année", "Durée", "Informations"]],
           "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations"]]}
+
 
 class CSVViewer(QMainWindow):
     def __init__(self):
@@ -17,7 +18,7 @@ class CSVViewer(QMainWindow):
     def initUI(self):
         self.setWindowTitle('CSV Editor')
         self.setGeometry(0, 0, 1200, 900)
-        self.setWindowIcon(QIcon('./logo/logo.png'))
+        self.setWindowIcon(QIcon('./logo/Logo.png'))
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
@@ -32,7 +33,7 @@ class CSVViewer(QMainWindow):
 
         file_menu = menubar.addMenu('Fichier')
 
-        new_action = QAction(QIcon('./logo/Plus.png'), 'Nouveau fichier CSV', self, checkable=False)
+        new_action = QAction(QIcon('./logo/Plus.png'), 'Nouveau fichier CSV', file_menu, checkable=False)
         new_action.triggered.connect(self.NewCSV)
         file_menu.addAction(new_action)
 
@@ -42,11 +43,11 @@ class CSVViewer(QMainWindow):
             action.triggered.connect(lambda: self.NewCSV(models[m]))
             model_action.addAction(action)
 
-        load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', self, checkable=False)
+        load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', file_menu, checkable=False)
         load_action.triggered.connect(self.ImportCSV)
         file_menu.addAction(load_action)
 
-        self.export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', self, checkable=False)
+        self.export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', file_menu, checkable=False)
         self.export_action.triggered.connect(self.ExportCSV)
         file_menu.addAction(self.export_action)
         self.export_action.setEnabled(False)
@@ -55,7 +56,6 @@ class CSVViewer(QMainWindow):
         self.smenu.setEnabled(False)
         self.smenu_group = QActionGroup(self.smenu)
         self.smenu_group.setExclusive(True)
-        
 
     def createPopupMenu(self):
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -81,10 +81,32 @@ class CSVViewer(QMainWindow):
 
         menu.exec_(self.table.mapToGlobal(pos))
     
+    def contextMenuEvent(self, event):
+
+        menu = QMenu(self.table)
+
+        action_n_row = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
+        action_n_row.triggered.connect(self.NewRow)
+        menu.addAction(action_n_row)
+
+        action_n_col = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
+        action_n_col.triggered.connect(self.NewColumn)
+        menu.addAction(action_n_col)
+
+        action_delete = QAction(QIcon('./logo/Delete.png'), "Supprimer", self.table)
+        action_delete.triggered.connect(self.Delete)
+
+        if self.table.selectedItems():
+            menu.addAction(action_delete)
+
+        menu.exec(event.globalPos())
+    
     def createTable(self):
-        self.table = QTableWidget(self)
+        self.table = QTableWidget(self.central_widget)
         self.layout.addWidget(self.table)
-        self.createPopupMenu()
+        self.table.resizeColumnsToContents()
+        self.table.resizeRowsToContents()
+        self.table.setAlternatingRowColors(True)
         self.table.setEnabled(False)
         self.table.itemChanged.connect(self.handleItemChange)
         self.table.itemActivated.connect(self.handleItemChange)
@@ -96,6 +118,8 @@ class CSVViewer(QMainWindow):
        
         if item.text() != list([self.CSV.header]+self.CSV.content)[item.row()] and self.onchange == False:
             self.odata[self.row_current_pos[item.row()]][item.column()] = item.text()
+            self.table.resizeColumnToContents(item.column())
+            self.table.resizeRowToContents(item.row())
 
         self.update_smenu()
         
@@ -115,6 +139,8 @@ class CSVViewer(QMainWindow):
             self.odata = [self.CSV.header] + self.CSV.content
             self.row_current_pos = list(range(len(self.odata)))
             self.displayCSV(self.odata)
+            self.table.resizeColumnsToContents()
+            self.table.resizeRowsToContents()
 
     def ExportCSV(self):
         options = QFileDialog.Options()
@@ -133,7 +159,8 @@ class CSVViewer(QMainWindow):
         for row in range(len(data)):
             for column in range(len(data[0])):
                 item = QTableWidgetItem(data[row][column])
-                item.setTextAlignment(Qt.AlignCenter)
+                #item.setTextAlignment(Qt.AlignCenter)
+                item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.table.setItem(row, column, item)
         
         self.onchange = False
@@ -194,6 +221,8 @@ class CSVViewer(QMainWindow):
             self.row_current_pos = list(range(len(self.odata)))
             if data != [[]]:
                 self.displayCSV(data)
+                self.table.resizeColumnsToContents()
+                self.table.resizeRowsToContents()
             else:
                 self.NewColumn()
 
@@ -235,4 +264,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     viewer = CSVViewer()
     viewer.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
