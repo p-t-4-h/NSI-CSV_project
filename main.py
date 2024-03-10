@@ -211,7 +211,10 @@ class CSVViewer(QMainWindow):
                 data[row][col] = ''
                 self.odata[self.row_current_pos[row]][col] = ''
 
-        self.displayCSV(data)
+        if data == []:
+            self.NewCSV()
+        else:
+            self.displayCSV(data)
 
 
 if __name__ == '__main__':
