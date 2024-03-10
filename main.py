@@ -4,6 +4,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QAction, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout, QActionGroup
 
+models = {"Film": [["Titre", "Genre", "Année", "Durée", "Informations"]],
+          "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations"]]}
+
 class CSVViewer(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -32,6 +35,12 @@ class CSVViewer(QMainWindow):
         new_action = QAction(QIcon('./logo/Plus.png'), 'Nouveau fichier CSV', self, checkable=False)
         new_action.triggered.connect(self.NewCSV)
         file_menu.addAction(new_action)
+
+        model_action = file_menu.addMenu(QIcon('./logo/Plus.png'), "Créer depuis un modèle")
+        for m in models:
+            action = QAction(m, model_action, checkable=False)
+            action.triggered.connect(lambda: self.NewCSV(models[m]))
+            model_action.addAction(action)
 
         load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', self, checkable=False)
         load_action.triggered.connect(self.ImportCSV)
@@ -161,6 +170,8 @@ class CSVViewer(QMainWindow):
         
     def on_header_selected(self, sort_menu):
 
+        self.updateTable()
+
         self.smenu_checked = sort_menu.sender().text()
 
         if self.smenu_checked!="Aucun":
@@ -172,16 +183,19 @@ class CSVViewer(QMainWindow):
         self.odata = [data[self.row_current_pos.index(data.index(n))] for n in data]
         self.displayCSV(data)
 
-    def NewCSV(self):
+    def NewCSV(self, data=[[]]):
             self.CSV = csvf()
 
             self.update_smenu()
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
-            self.odata = [[]]
+            self.odata = data
             self.row_current_pos = list(range(len(self.odata)))
-            self.NewColumn()
+            if data != [[]]:
+                self.displayCSV(data)
+            else:
+                self.NewColumn()
 
     def NewRow(self):
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
