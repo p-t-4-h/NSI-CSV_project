@@ -14,7 +14,7 @@ class CSVViewer(QMainWindow):
     def initUI(self):
         self.setWindowTitle('CSV Editor')
         self.setGeometry(0, 0, 1200, 900)
-
+        self.setWindowIcon(QIcon('./logo/logo.png'))
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
