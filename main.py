@@ -205,7 +205,7 @@ class CSVViewer(QMainWindow):
         else:
             for row, col in indexes:
                 data[row][col] = ''
-                self.odata[self.row_current_pos[row][col]] = ''
+                self.odata[self.row_current_pos[row]][col] = ''
             self.updateTable()
 
         self.displayCSV(data)
