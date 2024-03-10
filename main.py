@@ -84,7 +84,8 @@ class CSVViewer(QMainWindow):
         
         if item.text() != list([self.CSV.header]+self.CSV.content):
             #print(self.odata[self.row_current_pos.index(item.row())][self.row_current_pos.index(item.column())])
-            print(item.text(), item.row(), item.column(), self.row_current_pos.index(item.row()), self.row_current_pos.index(item.column()))
+            print(item.text(), item.row(), self.row_current_pos.index(item.row()))
+            self.odata[self.row_current_pos.index(item.row())][item.column()] = item.text()
         
         self.updateTable()
         self.update_smenu()
