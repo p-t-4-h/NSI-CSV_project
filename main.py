@@ -196,11 +196,17 @@ class CSVViewer(QMainWindow):
         indexes = [(x.row(), x.column()) for x in self.table.selectedIndexes()]
         if all(tup[0] == indexes[0][0] for tup in indexes) and [tup[1] for tup in indexes] == list(range(len(self.CSV.header))):
             data.pop(indexes[0][0])
+            self.odata.pop(indexes[0][0])
+            self.updateTable()
         elif all(tup[1] == indexes[0][1] for tup in indexes) and [tup[0] for tup in indexes] == list(range(len(data))):
             [x.pop(indexes[0][1]) for x in data]
+            [x.pop(indexes[0][1]) for x in self.odata]
+            self.updateTable()
         else:
             for row, col in indexes:
                 data[row][col] = ''
+                self.odata[self.row_current_pos[row][col]] = ''
+            self.updateTable()
 
         self.displayCSV(data)
 
