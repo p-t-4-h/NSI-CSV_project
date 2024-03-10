@@ -160,11 +160,9 @@ class CSVViewer(QMainWindow):
         
     def on_header_selected(self, sort_menu):
 
-        current = sort_menu.sender().text()
-        self.smenu_checked = current
-        print(current)
+        self.smenu_checked = sort_menu.sender().text()
 
-        if current!="Aucun":
+        if self.smenu_checked!="Aucun":
             data = [self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked)
         else:
             data = self.odata
