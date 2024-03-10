@@ -179,13 +179,15 @@ class CSVViewer(QMainWindow):
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
-
+            self.odata = [[]]
+            self.row_current_pos = list(range(len(self.odata)))
             self.NewColumn()
 
     def NewRow(self):
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
         self.odata.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
+        self.row_current_pos = [self.odata.index(x) for x in data]
         self.displayCSV(data)
 
     def NewColumn(self):
