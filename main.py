@@ -130,7 +130,7 @@ class CSVViewer(QMainWindow):
 
     def saveCSV(self, filePath):
         self.updateTable()
-        self.CSV.Export(filePath)
+        self.CSV.Export(filePath, self.odata)
     
     def updateTable(self):
         data = []
