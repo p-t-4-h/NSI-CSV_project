@@ -82,11 +82,14 @@ class CSVViewer(QMainWindow):
 
     def handleItemChange(self, item):
         
-        if item.text() != list([self.CSV.header]+self.CSV.content):
-            #print(self.odata[self.row_current_pos.index(item.row())][self.row_current_pos.index(item.column())])
-            print(item.text(), item.row(), self.row_current_pos.index(item.row()))
-            self.odata[self.row_current_pos.index(item.row())][item.column()] = item.text()
         
+        
+        
+
+        if item.text() != list([self.CSV.header]+self.CSV.content) and list([self.CSV.header]+self.CSV.content)[item.row()] != self.odata[self.row_current_pos[item.row()]]:
+            #print(self.odata[self.row_current_pos.index(item.row())][self.row_current_pos.index(item.column())])
+            print(item.text(), item.row(), self.row_current_pos[item.row()], list([self.CSV.header]+self.CSV.content)[item.row()], self.odata[self.row_current_pos[item.row()]], self.row_current_pos)
+            #self.odata[self.row_current_pos.index(item.row())][item.column()] = item.text()
         self.updateTable()
         self.update_smenu()
         
