@@ -182,12 +182,14 @@ class CSVViewer(QMainWindow):
 
     def NewRow(self):
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
+        self.odata.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
         self.displayCSV(data)
 
     def NewColumn(self):
         self.CSV.header.append('')
-        [row.append('') for row in self.CSV.content] 
+        [row.append('') for row in self.CSV.content]
+        [row.append('') for row in self.odata]
         self.displayCSV([self.CSV.header] + self.CSV.content)
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
 
