@@ -83,14 +83,15 @@ class CSVViewer(QMainWindow):
     def handleItemChange(self, item):
         
         
-        
-        
+        self.updateTable()
+       
 
-        if item.text() != list([self.CSV.header]+self.CSV.content) and list([self.CSV.header]+self.CSV.content)[item.row()] != self.odata[self.row_current_pos[item.row()]]:
+        if item.text() != list([self.CSV.header]+self.CSV.content)[item.row()] and self.onchange == False:
             #print(self.odata[self.row_current_pos.index(item.row())][self.row_current_pos.index(item.column())])
             print(item.text(), item.row(), self.row_current_pos[item.row()], list([self.CSV.header]+self.CSV.content)[item.row()], self.odata[self.row_current_pos[item.row()]], self.row_current_pos)
-            #self.odata[self.row_current_pos.index(item.row())][item.column()] = item.text()
-        self.updateTable()
+            #self.odata[self.row_current_pos[item.row()]][item.column()] = item.text()
+
+        
         self.update_smenu()
         
 
@@ -119,6 +120,7 @@ class CSVViewer(QMainWindow):
 
     def displayCSV(self, data):
 
+        self.onchange = True
         self.table.setRowCount(len(data))
         self.table.setColumnCount(len(data[0]))
         
@@ -127,6 +129,8 @@ class CSVViewer(QMainWindow):
                 item = QTableWidgetItem(data[row][column])
                 item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, column, item)
+        
+        self.onchange = False
 
     def saveCSV(self, filePath):
         self.updateTable()
@@ -142,6 +146,7 @@ class CSVViewer(QMainWindow):
             data += [row_data]
         self.CSV.header = data[0]
         self.CSV.content = data[1:]
+        
 
     def update_smenu(self):
         
