@@ -81,14 +81,12 @@ class CSVViewer(QMainWindow):
         self.table.itemActivated.connect(self.handleItemChange)
 
     def handleItemChange(self, item):
-            
-
+        
+        if item.text() != list([self.CSV.header]+self.CSV.content):
+            #print(self.odata[self.row_current_pos.index(item.row())][self.row_current_pos.index(item.column())])
+            print(item.text(), item.row(), item.column(), self.row_current_pos.index(item.row()), self.row_current_pos.index(item.column()))
+        
         self.updateTable()
-        print(item.text(), item.row(), item.column())
-        if item.text() != self.odata[item.row()][item.column()] and item.text() != list([self.CSV.header]+self.CSV.content)[item.row()][item.column()]:
-            print(item.text(), item.row(), item.column())
-            #self.odata[item.row()][item.column()] = item.text()
-
         self.update_smenu()
         
 
@@ -157,34 +155,18 @@ class CSVViewer(QMainWindow):
         
     def on_header_selected(self, sort_menu):
 
-        current = sort_menu.sender().text()  
-
-        if current!="Aucun" and self.smenu_checked=="Aucun":
-            #self.table.setEnabled(False)
-            #self.row_current_pos = [self.odata.index(x) for x in [self.CSV.header] + self.CSV.content]
-            #self.odata = [self.CSV.header] + self.CSV.content
-            self.smenu_checked = current
-            self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
-        elif current!="Aucun" and self.smenu_checked!="Aucun":
-            #self.table.setEnabled(False)
-            #self.row_current_pos = [self.odata.index(x) for x in [self.CSV.header] + self.CSV.content]
-            self.smenu_checked = current
-            self.displayCSV([self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked))
-        else:
-            #self.table.setEnabled(True)
-            #self.row_current_pos = list(range(len(self.odata)))
-            self.smenu_checked = current
-            self.displayCSV(self.odata)
-
+        current = sort_menu.sender().text()
+        self.smenu_checked = current
         print(current)
-        self.updateTable()
-        data = [self.CSV.header]+self.CSV.content
+
+        if current!="Aucun":
+            data = [self.CSV.header] + self.CSV.SortByHeader(self.smenu_checked)
+        else:
+            data = self.odata
+
         self.row_current_pos = [self.odata.index(x) for x in data]
         self.odata = [data[self.row_current_pos.index(data.index(n))] for n in data]
-        print(self.odata)    
-        self.updateTable()
-        
-        print(self.row_current_pos)
+        self.displayCSV(data)
 
     def NewCSV(self):
             self.CSV = csvf()
