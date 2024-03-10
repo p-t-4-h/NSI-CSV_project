@@ -100,7 +100,7 @@ class CSVViewer(QMainWindow):
             self.CSV = csvf()
             self.CSV.Import(filePath)
             self.smenu.setEnabled(True)
-            self.export_action.setEnabled(False)
+            self.export_action.setEnabled(True)
             self.table.setEnabled(True)
 
             self.odata = [self.CSV.header] + self.CSV.content
@@ -177,7 +177,7 @@ class CSVViewer(QMainWindow):
 
             self.update_smenu()
             self.smenu.setEnabled(True)
-            self.export_action.setEnabled(False)
+            self.export_action.setEnabled(True)
             self.table.setEnabled(True)
 
             self.NewColumn()
