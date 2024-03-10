@@ -37,10 +37,10 @@ class CSVViewer(QMainWindow):
         load_action.triggered.connect(self.ImportCSV)
         file_menu.addAction(load_action)
 
-        export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', self, checkable=False)
-        export_action.triggered.connect(self.ExportCSV)
-        file_menu.addAction(export_action)
-
+        self.export_action = QAction(QIcon('./logo/Export.png'), 'Exporter en CSV', self, checkable=False)
+        self.export_action.triggered.connect(self.ExportCSV)
+        file_menu.addAction(self.export_action)
+        self.export_action.setEnabled(False)
 
         self.smenu = menubar.addMenu("&Trier")
         self.smenu.setEnabled(False)
@@ -100,6 +100,7 @@ class CSVViewer(QMainWindow):
             self.CSV = csvf()
             self.CSV.Import(filePath)
             self.smenu.setEnabled(True)
+            self.export_action.setEnabled(False)
             self.table.setEnabled(True)
 
             self.odata = [self.CSV.header] + self.CSV.content
@@ -176,6 +177,7 @@ class CSVViewer(QMainWindow):
 
             self.update_smenu()
             self.smenu.setEnabled(True)
+            self.export_action.setEnabled(False)
             self.table.setEnabled(True)
 
             self.NewColumn()
