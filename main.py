@@ -4,8 +4,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
 #QAction, QActionGroup,
-models = {"Film": [["Titre", "Genre", "Année", "Durée", "Informations"]],
-          "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations"]]}
+models = {"Film": [["Titre", "Genre", "Année", "Durée", "Informations"]], "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations"]]}
 
 
 class CSVViewer(QMainWindow):
