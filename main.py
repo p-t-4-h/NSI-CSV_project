@@ -219,7 +219,7 @@ class CSVViewer(QMainWindow):
                 self.table.resizeRowsToContents()
             else:
                 self.odata = [[]]
-                self.row_current_pos = []
+                self.row_current_pos = [0]
                 self.NewColumn()
 
     def NewRow(self):
