@@ -1,5 +1,3 @@
-Python 3.9.5 required
+# CSV Editor by [p-t-4-h](https://github.com/p-t-4-h)
 
-PyQt6 required
 
-Windows 11 [required]
