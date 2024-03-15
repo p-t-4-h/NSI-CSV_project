@@ -44,4 +44,4 @@ Download the `.exe` file from the [release page](https://github.com/p-t-4-h/NSI-
 [Video :](https://github.com/p-t-4-h/NSI-CSV_project/assets/61159937/143ee00e-a8c7-41b8-9d21-1230c9b5b00f)
 
 
-
+!! The video has a problem: you can't see the submenus, but they are there in real life !!
