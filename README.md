@@ -13,6 +13,6 @@
 
 </details>
 
-##Why this project ?
+## Why this project ?
 
 The aim of the project is to create a CSV editor in Python to save information on the media we watch, for example.
