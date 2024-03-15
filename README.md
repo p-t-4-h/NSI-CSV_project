@@ -5,10 +5,10 @@
   
 - [Why this project ?](#why-this-project-)
 - [Installation](#how-to-install)
-  - [Requirements]()
-  - [Method 1]()
-  - [Method 2]()
-- [Presentation]()
+  - [Requirements](#requirements)
+  - [Method 1](#method-1)
+  - [Method 2](#method-2)
+- [Presentation](#presentation)
 
 </details>
 
