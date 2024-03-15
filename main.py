@@ -3,8 +3,10 @@ from AppFuncs import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
-#QAction, QActionGroup,
-models = {"Film": [["Titre", "Genre", "Année", "Durée", "Informations"]], "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations"]]}
+
+models = {
+        "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], 
+        "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]]}
 
 
 class CSVViewer(QMainWindow):
@@ -16,7 +18,7 @@ class CSVViewer(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('CSV Editor')
-        self.setGeometry(0, 0, 1200, 900)
+        self.setGeometry(0, 0, 1100, 700)
         self.setWindowIcon(QIcon('./logo/Logo.png'))
 
         self.central_widget = QWidget(self)
@@ -37,10 +39,11 @@ class CSVViewer(QMainWindow):
         file_menu.addAction(new_action)
 
         model_action = file_menu.addMenu(QIcon('./logo/Plus.png'), "Créer depuis un modèle")
-        for m in models:
-            action = QAction(m, model_action, checkable=False)
-            action.triggered.connect(lambda: self.NewCSV(models[m]))
-            model_action.addAction(action)
+        for key, value in models.items():
+            print(key, value)
+            sub_model_action = QAction(key, model_action, checkable=False)
+            sub_model_action.triggered.connect(lambda: self.NewCSV(value))
+            model_action.addAction(sub_model_action)
 
         load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', file_menu, checkable=False)
         load_action.triggered.connect(self.ImportCSV)
@@ -209,20 +212,22 @@ class CSVViewer(QMainWindow):
         self.odata = [data[self.row_current_pos.index(data.index(n))] for n in data]
         self.displayCSV(data)
 
-    def NewCSV(self, data=[[]]):
+    def NewCSV(self, data=None):
             self.CSV = csvf()
 
             self.update_smenu()
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
-            self.odata = data
-            self.row_current_pos = list(range(len(self.odata)))
-            if data != [[]]:
+            if data:
+                self.odata = data
+                self.row_current_pos = list(range(len(self.odata)))
                 self.displayCSV(data)
                 self.table.resizeColumnsToContents()
                 self.table.resizeRowsToContents()
             else:
+                self.odata = [[]]
+                self.row_current_pos = []
                 self.NewColumn()
 
     def NewRow(self):
