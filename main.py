@@ -205,7 +205,7 @@ class CSVViewer(QMainWindow):
 
     def NewCSV(self, model=None):
             self.CSV = csvf()
-
+            self.smenu_checked = "Aucun"
             self.update_smenu()
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
