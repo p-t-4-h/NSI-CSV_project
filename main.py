@@ -4,10 +4,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
 
-models = {
-        "Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], 
-        "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]]}
-
+models = {"Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]]}
 
 class CSVViewer(QMainWindow):
     def __init__(self):
@@ -126,7 +123,6 @@ class CSVViewer(QMainWindow):
         
 
     def ImportCSV(self):
-        #options |= QFileDialog.DontUseNativeDialog
         filePath, _ = QFileDialog.getOpenFileName(self, "Charger un fichier CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
@@ -143,7 +139,6 @@ class CSVViewer(QMainWindow):
             self.table.resizeRowsToContents()
 
     def ExportCSV(self):
-        #options |= QFileDialog.DontUseNativeDialog
         filePath, _ = QFileDialog.getSaveFileName(self, "Exporter en CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
@@ -158,7 +153,6 @@ class CSVViewer(QMainWindow):
         for row in range(len(data)):
             for column in range(len(data[0])):
                 item = QTableWidgetItem(data[row][column])
-                #item.setTextAlignment(Qt.AlignCenter)
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.table.setItem(row, column, item)
         
