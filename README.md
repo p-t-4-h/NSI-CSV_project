@@ -38,6 +38,6 @@ The aim of the project is to create a CSV editor in Python to save information o
 
 ### Method 2
 
-Download the `.exe` file from the [release page](github.com/p-t-4-h/NSI-CSV_project/releases/latest)
+Download the `.exe` file from the [release page](/releases/latest)
 
 
