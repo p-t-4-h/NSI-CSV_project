@@ -4,7 +4,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
 
-models = {"Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]]}
+models = {"Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]],}
 
 class CSVViewer(QMainWindow):
     def __init__(self):
@@ -36,9 +36,9 @@ class CSVViewer(QMainWindow):
         file_menu.addAction(new_action)
 
         model_action = file_menu.addMenu(QIcon('./logo/Plus.png'), "Créer depuis un modèle")
-        for key, value in models.items():
+        for key in models:
             sub_model_action = QAction(key, model_action, checkable=False)
-            sub_model_action.triggered.connect(lambda: self.NewCSV(value))
+            sub_model_action.triggered.connect(lambda: self.NewCSV(model_action))
             model_action.addAction(sub_model_action)
 
         load_action = QAction(QIcon('./logo/Import.png'), 'Importer un fichier CSV', file_menu, checkable=False)
@@ -203,17 +203,18 @@ class CSVViewer(QMainWindow):
         self.odata = [data[self.row_current_pos.index(data.index(n))] for n in data]
         self.displayCSV(data)
 
-    def NewCSV(self, data=None):
+    def NewCSV(self, model=None):
             self.CSV = csvf()
 
             self.update_smenu()
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
-            if data:
-                self.odata = data
+            if model:
+                model = models[model.sender().text()]
+                self.odata = model
                 self.row_current_pos = list(range(len(self.odata)))
-                self.displayCSV(data)
+                self.displayCSV(model)
                 self.table.resizeColumnsToContents()
                 self.table.resizeRowsToContents()
             else:
