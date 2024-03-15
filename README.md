@@ -41,4 +41,7 @@ Download the `.exe` file from the [release page](https://github.com/p-t-4-h/NSI-
 
 ## Presentation
 
-[](presentation.mp4)
+[](https://github.com/p-t-4-h/NSI-CSV_project/assets/61159937/143ee00e-a8c7-41b8-9d21-1230c9b5b00f)
+
+
+
