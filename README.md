@@ -6,6 +6,8 @@
 - [Why this project ?](#why-this-project-)
 - [Installation](#how-to-install)
   - [Requirements]()
+  - [Method 1]()
+  - [Method 2]()
 - [Remove](#how-to-remove-lambda-theme-)
 - [Plugin](#lambda-plugin)
 
