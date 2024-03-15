@@ -38,6 +38,6 @@ The aim of the project is to create a CSV editor in Python to save information o
 
 ### Method 2
 
-Download the `.exe` file from the [release page](/releases/latest)
+Download the `.exe` file from the [release page](releases/latest)
 
 
