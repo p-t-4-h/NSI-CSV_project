@@ -3,7 +3,7 @@
 <details>
 <summary>Table of Contents</summary>
   
-- [Why choose lambda ?](#why-choose-lambda-)
+- [Why choose lambda ?](main.py)
   - [[Image] - Default view](#default-view)
   - [[Image] - Root User and open ports](#root-user-and-open-ports)
   - [[Image] - VPN](#vpn)
