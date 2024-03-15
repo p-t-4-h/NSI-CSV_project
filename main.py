@@ -127,9 +127,8 @@ class CSVViewer(QMainWindow):
         
 
     def ImportCSV(self):
-        options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
-        filePath, _ = QFileDialog.getOpenFileName(self, "Charger un fichier CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)", options=options)
+        filePath, _ = QFileDialog.getOpenFileName(self, "Charger un fichier CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
             self.CSV = csvf()
@@ -145,9 +144,8 @@ class CSVViewer(QMainWindow):
             self.table.resizeRowsToContents()
 
     def ExportCSV(self):
-        options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
-        filePath, _ = QFileDialog.getSaveFileName(self, "Exporter en CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)", options=options)
+        filePath, _ = QFileDialog.getSaveFileName(self, "Exporter en CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
             self.saveCSV(filePath)
