@@ -8,8 +8,7 @@
   - [Requirements]()
   - [Method 1]()
   - [Method 2]()
-- [Remove](#how-to-remove-lambda-theme-)
-- [Plugin](#lambda-plugin)
+- [Presentation]()
 
 </details>
 
@@ -40,4 +39,6 @@ The aim of the project is to create a CSV editor in Python to save information o
 
 Download the `.exe` file from the [release page](https://github.com/p-t-4-h/NSI-CSV_project/releases)
 
+## Presentation
 
+[](presentation.mp4)
