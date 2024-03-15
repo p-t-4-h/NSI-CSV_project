@@ -1,3 +1,1 @@
-sys
-re
 PyQt6
