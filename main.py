@@ -1,19 +1,28 @@
+# Credit : Noah Delrue | Alias pt4h
+# 2024 for school
+
+
 import sys
 from AppFuncs import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QFileDialog, QMenuBar, QDialog, QLabel, QLineEdit, QVBoxLayout,  QAbstractScrollArea
 
+# Modèles de fichiers csv ajoutés a l'application
 models = {"Série": [["Titre", "Genre", "Année", "Nombre d'épisodes", "Informations", "Plateforme"]], "Film": [["Titre", "Genre", "Année", "Durée", "Informations"]],}
 
+# Classe pour générer une fenêtre 
 class CSVViewer(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.initUI()
-        self.smenu_checked = "Aucun"
+        self.smenu_checked = "Aucun" # Valeur de tri
 
     def initUI(self):
+
+        # Création de la forme de la fenêtre et des logos
+
         self.setWindowTitle('CSV Editor')
         self.setGeometry(0, 0, 1100, 700)
         self.setWindowIcon(QIcon('./logo/Logo.png'))
@@ -27,6 +36,9 @@ class CSVViewer(QMainWindow):
         self.createTable()
 
     def createMenuBar(self):
+
+        # Création de la barre de menu pour effectuer des actions
+
         menubar = self.menuBar()
 
         file_menu = menubar.addMenu('Fichier')
@@ -55,31 +67,10 @@ class CSVViewer(QMainWindow):
         self.smenu_group = QActionGroup(self.smenu)
         self.smenu_group.setExclusive(True)
 
-    def createPopupMenu(self):
-        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.table.customContextMenuRequested.connect(self.showContextMenu)
-    
-    def showContextMenu(self, pos):
-
-        menu = QMenu(self.table)
-
-        action_n_row = QAction(QIcon('./logo/Plus.png'), "Nouvelle Ligne", self, checkable=False)
-        action_n_row.triggered.connect(self.NewRow)
-        menu.addAction(action_n_row)
-
-        action_n_col = QAction(QIcon('./logo/Plus.png'), "Nouvelle Colonne", self, checkable=False)
-        action_n_col.triggered.connect(self.NewColumn)
-        menu.addAction(action_n_col)
-
-        action_delete = QAction(QIcon('./logo/Delete.png'), "Supprimer", self.table)
-        action_delete.triggered.connect(self.Delete)
-
-        if self.table.selectedItems():
-            menu.addAction(action_delete)
-
-        menu.exec_(self.table.mapToGlobal(pos))
     
     def contextMenuEvent(self, event):
+        
+        # Ouverture d'un menu popup pour ajouter/supprimer des lignes/colonnes
 
         menu = QMenu(self.table)
 
@@ -100,6 +91,9 @@ class CSVViewer(QMainWindow):
         menu.exec(event.globalPos())
     
     def createTable(self):
+
+        # Crée un widget Table pour afficher les valeurs du fichier
+
         self.table = QTableWidget(self.central_widget)
         self.layout.addWidget(self.table)
         self.table.resizeColumnsToContents()
@@ -111,9 +105,11 @@ class CSVViewer(QMainWindow):
 
     def handleItemChange(self, item):
         
+        # Evènement exécuté quand il y a un changement dans la Table
         
         self.updateTable()
        
+        # Met a jour l'élément dans la table originale
         if item.text() != list([self.CSV.header]+self.CSV.content)[item.row()] and self.onchange == False:
             self.odata[self.row_current_pos[item.row()]][item.column()] = item.text()
             self.table.resizeColumnToContents(item.column())
@@ -123,6 +119,9 @@ class CSVViewer(QMainWindow):
         
 
     def ImportCSV(self):
+
+        # Fonction pour ouvir un explorateur pour importer un fichier CSV
+
         filePath, _ = QFileDialog.getOpenFileName(self, "Charger un fichier CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
@@ -139,12 +138,17 @@ class CSVViewer(QMainWindow):
             self.table.resizeRowsToContents()
 
     def ExportCSV(self):
+
+        # Fonction pour exporter un fichier csv avec un exploreur de fichier
+
         filePath, _ = QFileDialog.getSaveFileName(self, "Exporter en CSV", "", "Fichiers CSV (*.csv);;Tous les fichiers (*)")
 
         if filePath:
             self.saveCSV(filePath)
 
     def displayCSV(self, data):
+
+        # Affiche les valeurs dans la table
 
         self.onchange = True
         self.table.setRowCount(len(data))
@@ -159,10 +163,16 @@ class CSVViewer(QMainWindow):
         self.onchange = False
 
     def saveCSV(self, filePath):
+
+        # Action exécutée quand le boutton sauvegarder est cliqué
+
         self.updateTable()
         self.CSV.Export(filePath, self.odata)
     
     def updateTable(self):
+
+        # Met a jour la table avec les élément actuellement présent
+
         data = []
         for row in range(self.table.rowCount()):
             row_data = []
@@ -176,6 +186,8 @@ class CSVViewer(QMainWindow):
 
     def update_smenu(self):
         
+        # Met a jour le menu de tri en fonction des header du fichier
+
         if self.smenu:
             self.smenu.clear()
         
@@ -189,6 +201,8 @@ class CSVViewer(QMainWindow):
         self.smenu.findChild(QAction, self.smenu_checked).setChecked(True)
         
     def on_header_selected(self, sort_menu):
+
+        # Action exécutée quand un filtre est choisi
 
         self.updateTable()
 
@@ -204,6 +218,9 @@ class CSVViewer(QMainWindow):
         self.displayCSV(data)
 
     def NewCSV(self, model=None):
+            
+            # Crée un nouveau fichier CSV vide ou a partir d'un modele
+
             self.CSV = csvf()
             self.smenu_checked = "Aucun"
             self.update_smenu()
@@ -223,6 +240,9 @@ class CSVViewer(QMainWindow):
                 self.NewColumn()
 
     def NewRow(self):
+
+        # Action pour créer une nouvelle ligne
+
         self.CSV.content.append(['' for _ in range(len(self.CSV.header))])
         self.odata.append(['' for _ in range(len(self.CSV.header))])
         data = [self.CSV.header] + self.CSV.content
@@ -230,6 +250,9 @@ class CSVViewer(QMainWindow):
         self.displayCSV(data)
 
     def NewColumn(self):
+
+        # Action pour créer une nouvelle colonne
+
         self.CSV.header.append('')
         [row.append('') for row in self.CSV.content]
         [row.append('') for row in self.odata]
@@ -237,6 +260,9 @@ class CSVViewer(QMainWindow):
         self.table.editItem(self.table.item(0, len(self.CSV.header)-1))
 
     def Delete(self):
+
+        # Action pour supprimer une ligne, une colonne ou plusieurs éléments
+
         data = [self.CSV.header] + self.CSV.content
         indexes = [(x.row(), x.column()) for x in self.table.selectedIndexes()]
         if all(tup[0] == indexes[0][0] for tup in indexes) and [tup[1] for tup in indexes] == list(range(len(self.CSV.header))):
@@ -257,6 +283,7 @@ class CSVViewer(QMainWindow):
 
 
 if __name__ == '__main__':
+    # Ouverture de l'app GUI quand le programme est exécuté depuis ce fichier main.py
     app = QApplication(sys.argv)
     viewer = CSVViewer()
     viewer.show()
