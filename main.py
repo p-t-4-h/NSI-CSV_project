@@ -18,6 +18,7 @@ class CSVViewer(QMainWindow):
 
         self.initUI()
         self.smenu_checked = "Aucun" # Valeur de tri
+        self.empty = True
 
     def initUI(self):
 
@@ -71,6 +72,9 @@ class CSVViewer(QMainWindow):
     def contextMenuEvent(self, event):
         
         # Ouverture d'un menu popup pour ajouter/supprimer des lignes/colonnes
+
+        if self.empty == True:
+            self.NewCSV()
 
         menu = QMenu(self.table)
 
@@ -130,6 +134,7 @@ class CSVViewer(QMainWindow):
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
+            self.empty = False
 
             self.odata = [self.CSV.header] + self.CSV.content
             self.row_current_pos = list(range(len(self.odata)))
@@ -227,6 +232,7 @@ class CSVViewer(QMainWindow):
             self.smenu.setEnabled(True)
             self.export_action.setEnabled(True)
             self.table.setEnabled(True)
+            self.empty = False
             if model:
                 model = models[model.sender().text()]
                 self.odata = model
